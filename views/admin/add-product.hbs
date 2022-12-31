@@ -1,0 +1,32 @@
+<section>
+    <div class="container mt-5">
+        <div class="row ">
+
+            <div class="col-mid-6">
+                <h2 class="text-center">Add products</h2>
+                <form action="/admin/add-product" method="POST" enctype="multipart/form-data">
+                    <label for="">Brand</label>
+                    <input type="text" class="form-control" name="Brand">
+
+                    <label for="">Model</label>
+                    <input type="text" class="form-control" name="Model">
+
+                    <label for="">Category</label>
+                    <input type="text" class="form-control" name="Category">
+
+                    <label for="">Description</label>
+                    <input type="text" class="form-control" name="Description">
+
+
+                    <label for="">Price(₹)</label>
+                    <input type="text" class="form-control" name="Price">
+
+                    <label for="">Image</label>
+                    <input type="file"  class="form-control" name="Image">
+
+                    <button type="submit" class="btn btn-success ml-4" >Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>

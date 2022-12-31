@@ -1,0 +1,54 @@
+<section>
+    <div class="container col-md-12 p-3">
+        <div class="row ">
+       
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col">User</th>
+                    <th scop="col">Email</th>
+                    <th scope="col">Address</th>
+                    <th scope="col">Amount</th>
+                    <th scope="col">payment</th>
+                    <th scope="col">Status</th>
+                    <th>Action</th>
+                    
+                </tr>
+            </thead>
+       
+        <tbody>
+             {{#each orderslist}}
+            <tr>
+                <td>{{this.date}}</td>   
+                <td>{{this._id}}</td>
+                <td>{{this.deliveryDetails.Email}}</td>
+                <td>{{this.deliveryDetails.Address}}</td>
+                <td>₹{{this.TotalAmount}}</td>
+                <td>{{this.paymentMethod}}</td>
+                <td id="{{this._id}}">{{this.status}}</td>
+                <td>
+                    <b class="btn btn-primary" onclick="shipOrder('{{this._id}}')">ship</b>
+                </td>
+            </tr>
+
+            {{/each}}
+        </tbody>
+         </table>
+    </div>
+</section>
+<script>
+    function shipOrder(orderId){
+        $.ajax({
+            url: '/admin/ship-order',
+            data:{order:orderId,
+            user:userId},
+            method:'post',
+            success:(status)=>{
+                console.log(status);
+                document.getElementById(orderId).innerHTML=status
+            }
+        })
+    }
+</script>

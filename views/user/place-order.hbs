@@ -1,0 +1,132 @@
+<section>
+    <div class="container mt-5">
+        <form action="" id="checkout-form">
+            <div class="row">
+                <div class="col-md-6">
+                    <h2>Enter Delivery Details</h2>
+                    <div>
+                        <label for="">Email</label>
+                        <input type="text" class="form-control" id="Email" name="Email">
+
+                        <label for="">Mobile</label>
+                        <input type="text" class="form-control" id="Mobile" name="Mobile">
+                        
+
+                        <label for="">House no.,Building name</label>
+                        <input type="text" class="form-control" id="Address" name="Address">
+
+                        <label for="">City</label>
+                        <input type="text" class="form-control" id="City" name="city">
+
+                        <div class="row col-md-6">
+                            <label for="State">State</label>
+                            <select id="State" class="form-control" name="State">
+                                <option selected>Choose...</option>
+                                <option>Kerala</option>
+                                <option>Karnataka</option>
+                                <option>Tamilnadu</option>
+                                <option>Andrapradesh</option>
+                                <option>Telungana</option>
+                                <option>Goa</option>
+                                <option>Maharashtra</option>
+                                <option>Odissa</option>
+                                <option>Gujarat</option>
+                                <option>madhyapradhesh</option>
+                            </select>
+                        </div>
+                        <div class="row col-md-4">
+                            <label for="zip">Zip</label>
+                            <input type="text" class="form-control" id="Zip" name="zip">
+                            <input type="text" name="userId" id="" value="{{user._id}}" hidden>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-5">
+                    <div class="container mt-5 ml-5-checkout">
+                        <h3>Total Amount: ₹{{total}}</h3>
+                        <hr>
+                        <h5>Payment Method</h5>
+
+                        <div class="payment">
+                            <input type="radio" value="cash on delivery" name="payment-method">
+                            <label class="custom-control-label">Cash on Delivery</label>
+
+                            <input type="radio" value="Online payment" name="payment-method">
+                            <label class="custom-control-label">Online Payment</label>
+                        </div>
+                        <button type="submit" class="btn btn-success float-right">Checkout</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+<script>
+    $("#checkout-form").submit((e) => {
+        e.preventDefault()
+        $.ajax({
+            url: '/place-order',
+            method: 'post',
+            data: $('#checkout-form').serialize(),
+            success: (response) => {
+                alert(response)
+                if(response.codSuccess){
+                    location.href='/confirm-order'
+                }else{
+                    razorpayPayment(response)
+                }
+            }
+        })
+    })
+function razorpayPayment(order){
+    var options = {
+    "key": "rzp_test_kpxCOWMv58Veny", // Enter the Key ID generated from the Dashboard
+    "amount": order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+    "currency": "INR",
+    "name": "shopping@Online",
+    "description": "Test Transaction",
+    "image": "https://example.com/your_logo",
+    "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+    "handler": function (response){
+    verifyPayment(response,order)
+    },
+    "callback_url": "https://eneqd3r9zrjok.x.pipedream.net/",
+    "prefill": {
+        "name": "Gaurav Kumar",
+        "email": "gaurav.kumar@example.com",
+        "contact": "9999999999"
+    },
+    "notes": {
+        "address": "Razorpay Corporate Office"
+    },
+    "theme": {
+        "color": "#3399cc"
+    }
+};
+var rzp1 = new Razorpay(options);
+    rzp1.open();
+}
+function verifyPayment(payment,order){
+    $.ajax(
+        {
+            url:'/verify-payment',
+            data:{
+                payment,
+                order
+            },
+            method:'post',
+                success:(response)=>{
+                    console.log(response);
+                    if(response.status){
+                        location.href='/confirm-order'
+                    }else{
+                        alert("payment failed")
+                    }
+                }
+        }
+    )
+}
+
+</script>
